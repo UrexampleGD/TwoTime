@@ -1,5 +1,5 @@
 --This is open source. I would like to apologize if anything error. You can fix it or dm me on discord to fix and update this!
---I would also thanks to Feima for working with me, he made some of the stab function! Thank you Feima, lob u :3
+--I would also thanks to Feima for working with me, she made some of the stab function! Thank you Feima, lob u :3
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")

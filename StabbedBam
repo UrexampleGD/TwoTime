@@ -1,5 +1,5 @@
 --This is open source. I would like to apologize if anything error. You can fix it or dm me on discord to fix and update this!
---I would also thanks to Feima for working with me, she made some of the stab function! Thank you Feima, lob u :3
+--I would also thanks to Herlow for working with me, he made some of the stab function! Thank you Herlow!!
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -40,7 +40,7 @@ rangetxt.TextColor3 = Color3.fromRGB(255, 255, 255)
 rangetxt.TextSize = 16
 rangetxt.ClearTextOnFocus = false
 rangetxt.Parent = Frame
-Instance.new("UICorner", rangetxt).CornerRadius = UDim.new(0, 2) --visual effect dont mind this :>
+Instance.new("UICorner", rangetxt).CornerRadius = UDim.new(0, 2)
 Instance.new("UIStroke", rangetxt).Color = Color3.fromRGB(255, 255, 255)
 
 local back = Instance.new("TextButton")
@@ -81,8 +81,7 @@ UserInputService.InputChanged:Connect(function(input)
 end)
 
 local enabled = false
-local killers = {"Jason", "c00lkidd", "JohnDoe", "1x1x1x1", "Noli", "Slasher"}
-local killerFolder = workspace:WaitForChild("Players"):WaitForChild("Killers") --I copied sigma script for this cuz im lazy to write it down again
+local killers = {"Jason", "c00lkidd", "JohnDoe", "1x1x1x1", "Noli", "Slasher", "Sixer"}
 
 local function gtdgr()
 	local container = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("MainUI") and player.PlayerGui.MainUI:FindFirstChild("AbilityContainer")
@@ -116,11 +115,45 @@ RunService.Heartbeat:Connect(function()
 	local hrp = char:FindFirstChild("HumanoidRootPart")
 	if not hrp then return end
 	local range = tonumber(rangetxt.Text) or 4
-	for _, name in pairs(killers) do
-		local k = killerFolder:FindFirstChild(name)
-		if k then
-			local khrp = k:FindFirstChild("HumanoidRootPart")
-			if khrp then
+	
+	local function checkKiller(killer)
+		local khrp = killer:FindFirstChild("HumanoidRootPart")
+		if khrp then
+			local dist = (hrp.Position - khrp.Position).Magnitude
+			if dist <= range then
+				local look = khrp.CFrame.LookVector
+				local toPlayer = (hrp.Position - khrp.Position).Unit
+				if look:Dot(toPlayer) < 0.1 then
+					fire()
+					return true
+				end
+			end
+		end
+		return false
+	end
+	
+	if workspace:FindFirstChild("Players") and workspace.Players:FindFirstChild("Killers") then
+		for _, name in pairs(killers) do
+			local k = workspace.Players.Killers:FindFirstChild(name)
+			if k and checkKiller(k) then
+				return
+			end
+		end
+	end
+	
+	if workspace:FindFirstChild("Killers") then
+		for _, killer in pairs(workspace.Killers:GetChildren()) do
+			if table.find(killers, killer.Name) and checkKiller(killer) then
+				return
+			end
+		end
+	end
+	
+	for _, killer in pairs(workspace:GetChildren()) do
+		if killer:IsA("Model") and killer ~= char then
+			local khrp = killer:FindFirstChild("HumanoidRootPart")
+			local humanoid = killer:FindFirstChild("Humanoid")
+			if khrp and humanoid and humanoid.Health > 0 then
 				local dist = (hrp.Position - khrp.Position).Magnitude
 				if dist <= range then
 					local look = khrp.CFrame.LookVector
